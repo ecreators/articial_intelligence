@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EclipseCodeFormatterProjectSettings">
+    <option name="projectSpecificProfile">
+      <ProjectSpecificProfile>
+        <option name="formatter" value="ECLIPSE" />
+      </ProjectSpecificProfile>
+    </option>
+    <option name="selectedGlobalProfile">
+      <Settings>
+        <option name="formatter" value="ECLIPSE" />
+        <option name="id" value="1536393291336" />
+        <option name="name" value="new" />
+        <option name="pathToConfigFileJava" value="D:/workspace/mdm-main-repo/cssi-mdm/core/.settings/org.eclipse.jdt.core.prefs" />
+      </Settings>
+    </option>
+  </component>
+</project>
