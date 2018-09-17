@@ -35,6 +35,14 @@ public class NeuralNetwork {
     loadConfig(config);
   }
 
+  public void setName(final String networkName) {
+    this.memory.getNetworkMetaData().setNetworkName(networkName);
+  }
+
+  public String getName() {
+    return this.memory.getNetworkMetaData().getNetworkName();
+  }
+
   public void registerTotalErrorListenerHandler(final ITotalErrorEventHandler eventHandler) {
     this.totalErrorListeners.add(eventHandler);
   }

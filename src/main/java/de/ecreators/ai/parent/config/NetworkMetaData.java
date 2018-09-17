@@ -3,7 +3,7 @@ package de.ecreators.ai.parent.config;
 /**
  * @author bjoern frohberg
  */
-public class MetaData {
+public class NetworkMetaData {
 
   private String  networkName;
   private long    generation;

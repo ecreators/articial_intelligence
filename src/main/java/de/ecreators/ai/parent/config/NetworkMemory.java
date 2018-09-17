@@ -8,20 +8,20 @@ import java.util.List;
  */
 public class NetworkMemory {
 
-  private final MetaData               metaData;
+  private final NetworkMetaData        networkMetaData;
   private final List<List<NeuronData>> neuronData;
 
   public NetworkMemory() {
-    this.metaData = new MetaData();
+    this.networkMetaData = new NetworkMetaData();
     this.neuronData = new ArrayList<>();
   }
 
   public void incrementGeneration(final boolean solvedNetwork) {
-    this.metaData.incrementGeneration(solvedNetwork);
+    this.networkMetaData.incrementGeneration(solvedNetwork);
   }
 
-  public MetaData getMetaData() {
-    return this.metaData;
+  public NetworkMetaData getNetworkMetaData() {
+    return this.networkMetaData;
   }
 
   public List<List<NeuronData>> getNeuronData() {
@@ -29,6 +29,6 @@ public class NetworkMemory {
   }
 
   public boolean isSolvedNetwork() {
-    return this.metaData.isSolvedNetwork();
+    return this.networkMetaData.isSolvedNetwork();
   }
 }

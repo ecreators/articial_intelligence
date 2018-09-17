@@ -71,9 +71,10 @@ public class NeuralNetworkTest {
     final NetworkConfig xorConfig = newSmokeTestConfig(neuronsCountHiddenLayer, hiddenLayers);
 
     final NeuralNetwork network = new NeuralNetwork(xorConfig);
+    network.setName("XOR");
     network.registerTotalErrorListenerHandler((totalError, solved) -> {
       final double err = roundDigits(totalError, 8);
-      final long generation = network.getMemory().getMetaData().getGeneration();
+      final long generation = network.getMemory().getNetworkMetaData().getGeneration();
 
       System.out.println(MessageFormat.format("Total Error: {0} ( generation = {1} )",
                                               err,
