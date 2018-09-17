@@ -28,9 +28,47 @@ public class NeuralNetworkTest {
   private static final String OUTPUT_XOR_NAME = "xor";
 
   @Test
-  public void smokeTestWithXor() {
-    final NetworkConfig xorConfig = newSmokeTestConfig(10, 1);
-    final NetworkTraining xorTraining = newSmokeTestTraining(0.65, 0);
+  public void smokeTestWithXor_a_hidden_a() {
+    final double eta = 0.65;
+    final int acceptedTotalErrorThreshold = 0;
+    final int neuronsCountHiddenLayer = 5;
+    final int hiddenLayers = 1;
+    assertXorSmokeTest(eta, acceptedTotalErrorThreshold, neuronsCountHiddenLayer, hiddenLayers);
+  }
+
+  @Test
+  public void smokeTestWithXor_a_hidden_b() {
+    final double eta = 0.65;
+    final int acceptedTotalErrorThreshold = 0;
+    final int neuronsCountHiddenLayer = 10;
+    final int hiddenLayers = 1;
+    assertXorSmokeTest(eta, acceptedTotalErrorThreshold, neuronsCountHiddenLayer, hiddenLayers);
+  }
+
+  @Test
+  public void smokeTestWithXor_b() {
+    final double eta = 0.35;
+    final int acceptedTotalErrorThreshold = 0;
+    final int neuronsCountHiddenLayer = 10;
+    final int hiddenLayers = 1;
+    assertXorSmokeTest(eta, acceptedTotalErrorThreshold, neuronsCountHiddenLayer, hiddenLayers);
+  }
+
+  @Test
+  public void smokeTestWithXor_c() {
+    final double eta = 0.15;
+    final int acceptedTotalErrorThreshold = 0;
+    final int neuronsCountHiddenLayer = 10;
+    final int hiddenLayers = 1;
+    assertXorSmokeTest(eta, acceptedTotalErrorThreshold, neuronsCountHiddenLayer, hiddenLayers);
+  }
+
+  public void assertXorSmokeTest(final double eta,
+                                 final int acceptedTotalErrorThreshold,
+                                 final int neuronsCountHiddenLayer,
+                                 final int hiddenLayers) {
+    final NetworkTraining xorTraining = newSmokeTestTraining(eta, acceptedTotalErrorThreshold);
+    final NetworkConfig xorConfig = newSmokeTestConfig(neuronsCountHiddenLayer, hiddenLayers);
 
     final NeuralNetwork network = new NeuralNetwork(xorConfig);
     network.registerTotalErrorListenerHandler((totalError, solved) -> {
@@ -81,7 +119,7 @@ public class NeuralNetworkTest {
   }
 
   private NetworkTraining newSmokeTestTraining(final double eta, final int acceptedTotalErrorThreshold) {
-    final NetworkTraining training = new NetworkTraining(eta, acceptedTotalErrorThreshold);
+    final NetworkTraining training = new NetworkTraining(eta, acceptedTotalErrorThreshold, true);
     training.add(newXorUseCase(0, 0, 0));
     training.add(newXorUseCase(0, 1, 1));
     training.add(newXorUseCase(1, 0, 1));

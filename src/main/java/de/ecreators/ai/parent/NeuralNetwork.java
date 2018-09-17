@@ -105,7 +105,13 @@ public class NeuralNetwork {
         final double expected = useCase.getExpectedOutputValues().get(neuronOutputName);
         final double value = output.getValue();
 
-        final double missmatch = Math.abs(Math.round(expected) - Math.round(value));
+        final double missmatch;
+        if (training.roundedOutput()) {
+          missmatch = Math.abs(Math.round(expected) - Math.round(value));
+        }
+        else {
+          missmatch = Math.abs(expected - value);
+        }
         if (missmatch > 0d) {
           validAll = false;
           break outerFor;
