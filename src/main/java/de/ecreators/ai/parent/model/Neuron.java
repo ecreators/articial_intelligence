@@ -13,10 +13,10 @@ import de.ecreators.ai.parent.strategy.INeuronActivationFunction;
  */
 public class Neuron {
 
-  private       double                    value;
-  private       double                    bias;
-  private       double                    biasDelta;
-  private       double                    errorSignal;
+  private double                          value;
+  private double                          bias;
+  private double                          biasDelta;
+  private double                          errorSignal;
   private final List<NeuronBinding>       inputBindings  = new ArrayList<>();
   private final List<NeuronBinding>       outputBindings = new ArrayList<>();
   private final INeuronActivationFunction activator;
@@ -25,14 +25,15 @@ public class Neuron {
     this.activator = activator == null ? INeuronActivationFunction.SIGMOID : activator;
   }
 
+
   public void learnOutputNeuron(final double eta, final double expectedValue) {
-    this.errorSignal = (expectedValue - this.value);
+    this.errorSignal = (expectedValue - this.value) * derivate(this.value);
     learn(eta);
   }
 
   public void learnHiddenNeuron(final double eta) {
     final double sum = this.outputBindings.stream().mapToDouble(b -> b.calculateErrorSignal()).sum();
-    this.errorSignal = sum;
+    this.errorSignal = sum * derivate(this.value);
     learn(eta);
   }
 

@@ -43,17 +43,17 @@ public class NeuralNetwork {
     this.totalErrorListeners.remove(eventHandler);
   }
 
-  public void runTrainingSession(final NetworkTraining training) {
+  public void runTrainingSession(final NetworkTraining training, final boolean roundedOutputs) {
     if (this.memory.isSolvedNetwork()) {
       return;
     }
 
+    final double eta = training.getEtaLearningGradient();
     do {
-      trainGeneration(training);
-
-      final double totalError = getOutputLayer().getTotalError();
+      final double totalError = trainGeneration(training, eta);
       final boolean solvedNetwork = this.memory.isSolvedNetwork();
       notifyTotalErrorUpdated(totalError, solvedNetwork);
+
     }
     while (!this.memory.isSolvedNetwork());
   }
@@ -62,13 +62,13 @@ public class NeuralNetwork {
     this.totalErrorListeners.forEach(handler -> handler.onTotalErrorUpdated(totalError, solved));
   }
 
-  public void trainGeneration(final NetworkTraining training) {
+  public double trainGeneration(final NetworkTraining training, final double eta) {
+    final NeuralLayer outputLayer = getOutputLayer();
     for (final NetworkUseCase useCase : training) {
       testValues(useCase.getInputValues());
 
-      final double eta = training.getEtaLearningGradient();
-      final NeuralLayer outputLayer = getOutputLayer();
       outputLayer.trainOutputLayer(eta, useCase.getExpectedOutputValues());
+
       for (int i = this.layers.size() - 2; i >= 1; i--) {
         final NeuralLayer hiddenLayer = this.layers.get(i);
         hiddenLayer.trainHiddenLayer(eta);
@@ -79,13 +79,40 @@ public class NeuralNetwork {
         final NeuralLayer layer = layers.get(i);
         layer.applyDeltas();
       }
+    }
 
-      final boolean solved = outputLayer.getTotalError() <= training.getAcceptedTotalErrorThreshold();
-      this.memory.incrementGeneration(solved);
-      if (solved) {
-        updateMemory();
+    final double totalError = outputLayer.getTotalError();
+    boolean solved = totalError <= training.getAcceptedTotalErrorThreshold();
+    if (!solved && testUseCases(training)) {
+      solved = true;
+    }
+    this.memory.incrementGeneration(solved);
+
+    if (solved) {
+      updateMemory();
+    }
+
+    return totalError;
+  }
+
+  public boolean testUseCases(final NetworkTraining training) {
+    boolean validAll = true;
+    outerFor:
+    for (final NetworkUseCase useCase : training) {
+      final Map<String, Double> solvedValues = testValues(useCase.getInputValues());
+      for (final Map.Entry<String, Double> output : solvedValues.entrySet()) {
+        final String neuronOutputName = output.getKey();
+        final double expected = useCase.getExpectedOutputValues().get(neuronOutputName);
+        final double value = output.getValue();
+
+        final double missmatch = Math.abs(Math.round(expected) - Math.round(value));
+        if (missmatch > 0d) {
+          validAll = false;
+          break outerFor;
+        }
       }
     }
+    return validAll;
   }
 
   public Map<String, Double> testValues(final Map<String, Double> inputValues) {

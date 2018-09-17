@@ -5,8 +5,9 @@ package de.ecreators.ai.parent.strategy;
  */
 public interface INeuronActivationFunction {
 
-  INeuronActivationFunction SIGMOID  = new INeuronActivationFunction.Sigmoid();
-  INeuronActivationFunction IDENTITY = new INeuronActivationFunction.Identity();
+  INeuronActivationFunction SIGMOID         = new INeuronActivationFunction.Sigmoid(false);
+  INeuronActivationFunction IDENTITY        = new INeuronActivationFunction.Identity();
+  INeuronActivationFunction SIGMOID_ROUNDED = new INeuronActivationFunction.Sigmoid(true);
 
   double activate(double x);
 
@@ -14,9 +15,16 @@ public interface INeuronActivationFunction {
 
   class Sigmoid implements INeuronActivationFunction {
 
+    private final boolean rounded;
+
+    public Sigmoid(final boolean rounded) {
+      this.rounded = rounded;
+    }
+
     @Override
     public double activate(final double x) {
-      return 1 / (1 + Math.exp(-x));
+      final double output = 1 / (1 + Math.exp(-x));
+      return this.rounded ? Math.round(output) : output;
     }
 
     @Override

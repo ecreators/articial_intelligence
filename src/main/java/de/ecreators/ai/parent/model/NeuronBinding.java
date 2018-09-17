@@ -37,7 +37,7 @@ public class NeuronBinding {
   public void updateWeightDeltaByEta(final double eta) {
     final double inputValue = this.inputNeuron.getValue();
     // TODO unsure "inputValue" and "derivate" -> from output or input neuron or whenever
-    this.weightDelta = eta * this.outputNeuron.derivate(inputValue) * this.outputNeuron.getErrorSignal();
+    this.weightDelta = eta * inputValue * this.outputNeuron.getErrorSignal();
   }
 
   public void applyDelta() {
@@ -50,7 +50,7 @@ public class NeuronBinding {
 
   public double calculateErrorSignal() {
     // TODO unsure only error signal or multiplied with something other
-    return this.outputNeuron.getErrorSignal();
+    return this.outputNeuron.getErrorSignal() * this.weight;
   }
 
   public void loadMemory(final InputBindingData data) {

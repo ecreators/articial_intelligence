@@ -29,30 +29,30 @@ public class NeuralNetworkTest {
 
   @Test
   public void smokeTestWithXor() {
-    final NetworkTraining xorTraining = newSmokeTestTraining();
     final NetworkConfig xorConfig = newSmokeTestConfig(10, 1);
+    final NetworkTraining xorTraining = newSmokeTestTraining(0.65, 0);
 
     final NeuralNetwork network = new NeuralNetwork(xorConfig);
     network.registerTotalErrorListenerHandler((totalError, solved) -> {
-      final double err = roundDigits(totalError, 4);
+      final double err = roundDigits(totalError, 8);
       final long generation = network.getMemory().getMetaData().getGeneration();
 
       System.out.println(MessageFormat.format("Total Error: {0} ( generation = {1} )",
                                               err,
                                               generation));
     });
-    network.runTrainingSession(xorTraining);
+    network.runTrainingSession(xorTraining, true);
 
-    final double uc000 = roundDigits(network.testValues(inputValues(0, 0)).get(OUTPUT_XOR_NAME), 0);
+    final double uc000 = Math.round(network.testValues(inputValues(0, 0)).get(OUTPUT_XOR_NAME));
     Assert.assertThat(uc000, is(0d));
 
-    final double uc011 = roundDigits(network.testValues(inputValues(0, 1)).get(OUTPUT_XOR_NAME), 0);
+    final double uc011 = Math.round(network.testValues(inputValues(0, 1)).get(OUTPUT_XOR_NAME));
     Assert.assertThat(uc011, is(1d));
 
-    final double uc101 = roundDigits(network.testValues(inputValues(1, 0)).get(OUTPUT_XOR_NAME), 0);
+    final double uc101 = Math.round(network.testValues(inputValues(1, 0)).get(OUTPUT_XOR_NAME));
     Assert.assertThat(uc101, is(1d));
 
-    final double uc110 = roundDigits(network.testValues(inputValues(1, 1)).get(OUTPUT_XOR_NAME), 0);
+    final double uc110 = Math.round(network.testValues(inputValues(1, 1)).get(OUTPUT_XOR_NAME));
     Assert.assertThat(uc110, is(0d));
   }
 
@@ -80,8 +80,8 @@ public class NeuralNetworkTest {
     return new NetworkConfig(input, hidden, output);
   }
 
-  private NetworkTraining newSmokeTestTraining() {
-    final NetworkTraining training = new NetworkTraining(0.35, 0);
+  private NetworkTraining newSmokeTestTraining(final double eta, final int acceptedTotalErrorThreshold) {
+    final NetworkTraining training = new NetworkTraining(eta, acceptedTotalErrorThreshold);
     training.add(newXorUseCase(0, 0, 0));
     training.add(newXorUseCase(0, 1, 1));
     training.add(newXorUseCase(1, 0, 1));
