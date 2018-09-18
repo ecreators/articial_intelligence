@@ -2,6 +2,7 @@ package de.ecreators.ai.parent;
 
 import static org.hamcrest.CoreMatchers.is;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +13,12 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import de.ecreators.ai.parent.config.LayerConfig;
 import de.ecreators.ai.parent.config.NetworkConfig;
+import de.ecreators.ai.parent.config.NetworkMemory;
 import de.ecreators.ai.parent.strategy.INeuronActivationFunction;
 import de.ecreators.ai.parent.training.NetworkTraining;
 import de.ecreators.ai.parent.training.NetworkUseCase;
@@ -28,7 +33,7 @@ public class NeuralNetworkTest {
   private static final String OUTPUT_XOR_NAME = "xor";
 
   @Test
-  public void smokeTestWithXor_a_hidden_a() {
+  public void smokeTestWithXor_a_hidden_a() throws IOException {
     final double eta = 0.65;
     final int acceptedTotalErrorThreshold = 0;
     final int neuronsCountHiddenLayer = 5;
@@ -37,7 +42,7 @@ public class NeuralNetworkTest {
   }
 
   @Test
-  public void smokeTestWithXor_a_hidden_b() {
+  public void smokeTestWithXor_a_hidden_b() throws IOException {
     final double eta = 0.65;
     final int acceptedTotalErrorThreshold = 0;
     final int neuronsCountHiddenLayer = 10;
@@ -46,7 +51,7 @@ public class NeuralNetworkTest {
   }
 
   @Test
-  public void smokeTestWithXor_b() {
+  public void smokeTestWithXor_b() throws IOException {
     final double eta = 0.35;
     final int acceptedTotalErrorThreshold = 0;
     final int neuronsCountHiddenLayer = 10;
@@ -55,7 +60,7 @@ public class NeuralNetworkTest {
   }
 
   @Test
-  public void smokeTestWithXor_c() {
+  public void smokeTestWithXor_c() throws IOException {
     final double eta = 0.15;
     final int acceptedTotalErrorThreshold = 0;
     final int neuronsCountHiddenLayer = 10;
@@ -66,7 +71,7 @@ public class NeuralNetworkTest {
   public void assertXorSmokeTest(final double eta,
                                  final int acceptedTotalErrorThreshold,
                                  final int neuronsCountHiddenLayer,
-                                 final int hiddenLayers) {
+                                 final int hiddenLayers) throws IOException {
     final NetworkTraining xorTraining = newSmokeTestTraining(eta, acceptedTotalErrorThreshold);
     final NetworkConfig xorConfig = newSmokeTestConfig(neuronsCountHiddenLayer, hiddenLayers);
 
@@ -93,6 +98,23 @@ public class NeuralNetworkTest {
 
     final double uc110 = Math.round(network.testValues(inputValues(1, 1)).get(OUTPUT_XOR_NAME));
     Assert.assertThat(uc110, is(0d));
+  }
+
+  // @Test
+  // public void test() throws Exception {
+  //
+  // final NeuralNetwork network = new NeuralNetwork(new NetworkConfig());
+  // final NetworkMemory loadedMemory = printJson(network.updateMemory());
+  //
+  // }
+
+  private NetworkMemory printJson(final NetworkMemory memory) throws IOException {
+    final ObjectMapper mapper = new ObjectMapper();
+    mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    final String jsonMemory = mapper.writeValueAsString(mapper);
+    final String ln = System.lineSeparator();
+    System.out.println("Network XOR" + ln + jsonMemory);
+    return mapper.readValue(jsonMemory, NetworkMemory.class);
   }
 
   public static double roundDigits(final double totalError, final int digits) {
