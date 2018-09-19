@@ -1,16 +1,13 @@
 package de.ecreators.ai.parent;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.sun.istack.internal.NotNull;
 
 import de.ecreators.ai.parent.config.LayerConfig;
 import de.ecreators.ai.parent.config.NetworkConfig;
 import de.ecreators.ai.parent.config.NetworkMemory;
+import de.ecreators.ai.parent.config.NetworkMetaData;
 import de.ecreators.ai.parent.model.NeuralLayer;
 import de.ecreators.ai.parent.training.ITotalErrorEventHandler;
 import de.ecreators.ai.parent.training.NetworkTraining;
@@ -22,6 +19,7 @@ import de.ecreators.ai.parent.training.NetworkUseCase;
 public class NeuralNetwork {
 
   private final List<NeuralLayer> layers;
+  private final NetworkConfig     config;
 
   @NotNull
   private NetworkMemory memory;
@@ -29,10 +27,23 @@ public class NeuralNetwork {
   private final Set<ITotalErrorEventHandler> totalErrorListeners;
 
   public NeuralNetwork(final NetworkConfig config) {
+    this.config = config;
     this.layers = new ArrayList<>();
     this.memory = new NetworkMemory();
     this.totalErrorListeners = new LinkedHashSet<>();
     loadConfig(config);
+  }
+
+  public void defineInputNeuron(final String name) {
+    this.config.getInputLayerConfig().defineNeuron(name);
+    loadConfig(this.config);
+    this.memory.forget();
+  }
+
+  public void defineOutputNeuron(final String name) {
+    this.config.getOutputLayerConfig().defineNeuron(name);
+    loadConfig(this.config);
+    this.memory.forget();
   }
 
   public void setName(final String networkName) {
@@ -61,7 +72,6 @@ public class NeuralNetwork {
       final double totalError = trainGeneration(training, eta);
       final boolean solvedNetwork = this.memory.isSolvedNetwork();
       notifyTotalErrorUpdated(totalError, solvedNetwork);
-
     }
     while (!this.memory.isSolvedNetwork());
   }
@@ -90,13 +100,18 @@ public class NeuralNetwork {
     }
 
     final double totalError = outputLayer.getTotalError();
-    boolean solved = totalError <= training.getAcceptedTotalErrorThreshold();
-    if (!solved && testUseCases(training)) {
-      solved = true;
+    NetworkMetaData.ESolvation solved = NetworkMetaData.ESolvation.UNSOLVED;
+    if(totalError <= training.getAcceptedTotalErrorThreshold()) {
+      solved = NetworkMetaData.ESolvation.SOLVED_BY_TOTAL_ERROR;
     }
+
+    if (!solved.isSolvedState() && testUseCases(training)) {
+      solved = NetworkMetaData.ESolvation.SOLVED_BY_USE_CASES_VALID;
+    }
+
     this.memory.incrementGeneration(solved);
 
-    if (solved) {
+    if (solved.isSolvedState()) {
       updateMemory();
     }
 
@@ -145,6 +160,7 @@ public class NeuralNetwork {
 
   public NetworkMemory updateMemory() {
     this.memory.getNeuronData().clear();
+
     for (final NeuralLayer layer : this.layers) {
       layer.saveMemory(this.memory);
     }
@@ -233,7 +249,26 @@ public class NeuralNetwork {
     return layer;
   }
 
-  public NetworkMemory getMemory() {
+  public NetworkMemory getOrCreateUpdatedMemory() {
+    if (this.memory == null) {
+      this.memory = new NetworkMemory();
+    }
+
+    if(this.memory.isUnsaved()) {
+      updateMemory();
+    }
     return this.memory;
+  }
+
+  public double getValue(final String outputNeuronName) {
+    return getOutputLayer().getValues().get(outputNeuronName);
+  }
+
+  public void setInputValue(final String propertyName, final double normalizedValue) {
+    getInputLayer().setValue(propertyName, normalizedValue);
+  }
+
+  public double getInputValue(final String propertyName) {
+    return getInputLayer().getValues().get(propertyName);
   }
 }

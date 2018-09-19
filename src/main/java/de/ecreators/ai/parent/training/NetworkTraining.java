@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class NetworkTraining extends ArrayList<NetworkUseCase> {
 
-  private final double  etaLearningGradient;
-  private final double  acceptedTotalErrorThreshold;
+  private       double  etaLearningGradient;
+  private       double  acceptedTotalErrorThreshold;
   private final boolean roundedOutput;
 
   public NetworkTraining() {
@@ -31,5 +31,13 @@ public class NetworkTraining extends ArrayList<NetworkUseCase> {
 
   public boolean roundedOutput() {
     return this.roundedOutput;
+  }
+
+  public void setEtaLearningGradient(final double eta) {
+    this.etaLearningGradient = eta;
+  }
+
+  public void setAcceptedTotalErrorThreshold(final int maxError) {
+    this.acceptedTotalErrorThreshold = maxError;
   }
 }

@@ -1,12 +1,6 @@
 package de.ecreators.ai.parent.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javax.management.AttributeNotFoundException;
 
@@ -44,7 +38,7 @@ public class NeuralLayer {
   }
 
   public void setValues(final Map<String, Double> values) {
-    values.forEach((key, value) -> this.neurons.get(key).setValue(value));
+    values.forEach(this::setValue);
   }
 
   public Map<String, Double> getValues() {
@@ -94,6 +88,11 @@ public class NeuralLayer {
   }
 
   public void loadMemory(final NetworkMemory memory, final int selfLayerIndex) {
+
+    if (memory.isUnsaved()) {
+      saveMemory(memory);
+    }
+
     final Set<Map.Entry<String, Neuron>> neurons = this.neurons.entrySet();
     final List<NeuronData> neuronsData = memory.getNeuronData().get(selfLayerIndex);
     for (final Map.Entry<String, Neuron> e : neurons) {
@@ -125,5 +124,10 @@ public class NeuralLayer {
 
   public void applyDeltas() {
     this.neurons.values().forEach(neuron -> neuron.applyDeltas());
+  }
+
+  public void setValue(final String propertyName, final double normalizedValue) {
+    final Neuron neuron = this.neurons.get(propertyName);
+    neuron.setValue(normalizedValue);
   }
 }

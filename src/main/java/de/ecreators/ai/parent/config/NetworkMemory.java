@@ -16,7 +16,7 @@ public class NetworkMemory {
     this.neuronData = new ArrayList<>();
   }
 
-  public void incrementGeneration(final boolean solvedNetwork) {
+  public void incrementGeneration(final NetworkMetaData.ESolvation solvedNetwork) {
     this.networkMetaData.incrementGeneration(solvedNetwork);
   }
 
@@ -30,5 +30,14 @@ public class NetworkMemory {
 
   public boolean isSolvedNetwork() {
     return this.networkMetaData.isSolvedNetwork();
+  }
+
+  public void forget() {
+    this.neuronData.clear();
+    this.networkMetaData.clear();
+  }
+
+  public boolean isUnsaved() {
+    return this.neuronData.isEmpty() && !this.networkMetaData.isSolvedNetwork();
   }
 }
