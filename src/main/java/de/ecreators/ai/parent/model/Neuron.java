@@ -25,7 +25,6 @@ public class Neuron {
     this.activator = activator == null ? INeuronActivationFunction.SIGMOID : activator;
   }
 
-
   public void learnOutputNeuron(final double eta, final double expectedValue) {
     this.errorSignal = (expectedValue - this.value) * derivate(this.value);
     learn(eta);
@@ -38,7 +37,8 @@ public class Neuron {
   }
 
   private void learn(final double eta) {
-    this.biasDelta = this.errorSignal * eta;
+    final double momentum = 0.5;
+    this.biasDelta = this.errorSignal * eta + momentum * this.biasDelta;
     for (final NeuronBinding inputBinding : this.inputBindings) {
       inputBinding.updateWeightDeltaByEta(eta);
     }

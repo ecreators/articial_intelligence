@@ -18,6 +18,7 @@ public class NeuronBinding {
     this.outputNeuron = outputNeuron;
   }
 
+  // region getters, setters
   public double getWeight() {
     return this.weight;
   }
@@ -35,9 +36,29 @@ public class NeuronBinding {
   }
 
   public void updateWeightDeltaByEta(final double eta) {
-    final double inputValue = this.inputNeuron.getValue();
-    // TODO unsure "inputValue" and "derivate" -> from output or input neuron or whenever
-    this.weightDelta = eta * inputValue * this.outputNeuron.getErrorSignal();
+    final double momentum = 0.9;
+    final double actualInputValue = this.inputNeuron.getValue();
+    final double errorSignal = this.outputNeuron.getErrorSignal();
+    final double actualOutputValue = this.outputNeuron.getValue();
+    this.weightDelta = eta * errorSignal * actualInputValue * actualOutputValue + momentum * this.weightDelta;
+  }
+  // endregion
+
+  // region memory: load, save
+  public void loadMemory(final InputBindingData data) {
+    this.weight = data.getWeight();
+    this.weightDelta = data.getWeightDelta();
+  }
+
+  public void saveMemory(final InputBindingData bindingData) {
+    bindingData.setWeight(this.weight);
+    bindingData.setWeightDelta(this.weightDelta);
+  }
+  // endregion
+
+  public double calculateErrorSignal() {
+    // TODO unsure only error signal or multiplied with something other
+    return this.outputNeuron.getErrorSignal() * this.weight;
   }
 
   public void applyDelta() {
@@ -48,18 +69,4 @@ public class NeuronBinding {
     return this.weight * this.inputNeuron.getValue();
   }
 
-  public double calculateErrorSignal() {
-    // TODO unsure only error signal or multiplied with something other
-    return this.outputNeuron.getErrorSignal() * this.weight;
-  }
-
-  public void loadMemory(final InputBindingData data) {
-    this.weight = data.getWeight();
-    this.weightDelta = data.getWeightDelta();
-  }
-
-  public void saveMemory(final InputBindingData bindingData) {
-    bindingData.setWeight(this.weight);
-    bindingData.setWeightDelta(this.weightDelta);
-  }
 }
