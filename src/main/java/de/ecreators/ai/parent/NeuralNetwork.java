@@ -79,7 +79,7 @@ public class NeuralNetwork {
   private void notifyTotalErrorUpdated(final double totalError, final boolean solved) {
     this.totalErrorListeners.forEach(handler -> {
       final boolean cancel = handler.onTotalErrorUpdated(totalError, solved);
-      if(cancel) {
+      if (cancel) {
         this.memory.getNetworkMetaData().setSolvation(NetworkMetaData.ESolvation.UNSOLVED);
         this.memory.getNetworkMetaData().setSolvedNetwork(true);
       }
@@ -93,26 +93,30 @@ public class NeuralNetwork {
 
       outputLayer.trainOutputLayer(eta, useCase.getExpectedOutputValues());
 
-      for (int i = this.layers.size() - 2; i >= 1; i--) {
-        final NeuralLayer hiddenLayer = this.layers.get(i);
+      for (int layerIndex = this.layers.size() - 2; layerIndex >= 1; layerIndex--) {
+        final NeuralLayer hiddenLayer = this.layers.get(layerIndex);
         hiddenLayer.trainHiddenLayer(eta);
       }
 
       final List<NeuralLayer> layers = this.layers;
-      for (int i = layers.size() - 1; i >= 0; i--) {
-        final NeuralLayer layer = layers.get(i);
+      for (int layerIndex = layers.size() - 1; layerIndex >= 0; layerIndex--) {
+        final NeuralLayer layer = layers.get(layerIndex);
         layer.applyDeltas();
       }
     }
 
     final double totalError = outputLayer.getTotalError();
-    NetworkMetaData.ESolvation solved = NetworkMetaData.ESolvation.UNSOLVED;
-    if(totalError <= training.getAcceptedTotalErrorThreshold()) {
-      if(this.memory.getNetworkMetaData().getGeneration() <= 1) {
+    NetworkMetaData.ESolvation solved;
+    if (totalError <= training.getAcceptedTotalErrorThreshold()) {
+      if (this.memory.getNetworkMetaData().getGeneration() <= 1) {
         solved = NetworkMetaData.ESolvation.UNSOLVED;
-      }else {
+      }
+      else {
         solved = NetworkMetaData.ESolvation.SOLVED_BY_TOTAL_ERROR;
       }
+    }
+    else {
+      solved = NetworkMetaData.ESolvation.UNSOLVED;
     }
 
     if (!solved.isSolvedState() && testUseCases(training)) {
@@ -128,7 +132,7 @@ public class NeuralNetwork {
     return totalError;
   }
 
-  public boolean testUseCases(final NetworkTraining training) {
+  private boolean testUseCases(final NetworkTraining training) {
     boolean validAll = true;
     outerFor:
     for (final NetworkUseCase useCase : training) {
@@ -156,7 +160,13 @@ public class NeuralNetwork {
 
   public Map<String, Double> testValues(final Map<String, Double> inputValues) {
     getInputLayer().setValues(inputValues);
-    this.layers.stream().skip(1).forEach(layer -> layer.feedForward());
+
+    final List<NeuralLayer> layers = this.layers;
+    for (int layerIndex = 1; layerIndex < layers.size(); layerIndex++) {
+      final NeuralLayer layer = layers.get(layerIndex);
+      layer.feedForward();
+    }
+
     return getOutputLayer().getValues();
   }
 
@@ -265,7 +275,7 @@ public class NeuralNetwork {
       this.memory = new NetworkMemory();
     }
 
-    if(this.memory.isUnsaved()) {
+    if (this.memory.isUnsaved()) {
       updateMemory();
     }
     return this.memory;

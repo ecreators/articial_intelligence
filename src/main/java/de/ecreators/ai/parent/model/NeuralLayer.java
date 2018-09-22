@@ -26,7 +26,12 @@ public class NeuralLayer {
   }
 
   public double getTotalError() {
-    return this.neurons.values().stream().mapToDouble(n -> Math.pow(n.getErrorSignal(), 2) * 0.5).sum();
+    final Collection<Neuron> neurons = this.neurons.values();
+    double sum = 0.0;
+    for (final Neuron n : neurons) {
+      sum += Math.pow(n.getErrorSignal(), 2) * 0.5;
+    }
+    return sum;
   }
 
   public void trainOutputLayer(final double eta, final Map<String, Double> expectedValues) {
@@ -38,7 +43,7 @@ public class NeuralLayer {
   }
 
   public void setValues(final Map<String, Double> values) {
-    values.forEach(this::setValue);
+    values.forEach((propertyName, normalizedValue) -> setValue(propertyName, normalizedValue));
   }
 
   public Map<String, Double> getValues() {

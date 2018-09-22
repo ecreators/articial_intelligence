@@ -50,12 +50,11 @@ public class Neuron {
   }
 
   public void updateValue() {
-    final double sum = this.inputBindings.stream().mapToDouble(binding -> binding.calculateNetInput()).sum();
-    this.value = activate(sum);
-  }
-
-  private double activate(final double sum) {
-    return this.activator.activate(sum + this.bias);
+    double sum = 0.0;
+    for (final NeuronBinding binding : this.inputBindings) {
+      sum += binding.calculateNetInput();
+    }
+    this.value = this.activator.activate(sum + this.bias);
   }
 
   public double derivate(final double inputValue) {

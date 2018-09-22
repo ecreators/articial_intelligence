@@ -5,6 +5,7 @@ import static de.ecreators.ai.parent.xor.XorNeuralNetwork.*;
 import static org.hamcrest.CoreMatchers.is;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -82,16 +83,24 @@ public class NeuralNetworkTest {
     network.registerTotalErrorListenerHandler((totalError, solved) -> printToLog(network, totalError));
     network.runTraining();
 
-    final double uc000 = Math.round(network.testValues(inputValues(INPUT_A_NAME, 0, INPUT_B_NAME, 0)).get(OUTPUT_XOR_NAME));
+    final Map<String, Double> inputValuesA = inputValues(INPUT_A_NAME, 0, INPUT_B_NAME, 0);
+    final Double outputXORforA = network.testValues(inputValuesA).get(OUTPUT_XOR_NAME);
+    final double uc000 = Math.round(outputXORforA);
     Assert.assertThat(uc000, is(0d));
 
-    final double uc011 = Math.round(network.testValues(inputValues(INPUT_A_NAME, 0, INPUT_B_NAME, 1)).get(OUTPUT_XOR_NAME));
+    final Map<String, Double> inputValuesB = inputValues(INPUT_A_NAME, 0, INPUT_B_NAME, 1);
+    final Double outputXORforB = network.testValues(inputValuesB).get(OUTPUT_XOR_NAME);
+    final double uc011 = Math.round(outputXORforB);
     Assert.assertThat(uc011, is(1d));
 
-    final double uc101 = Math.round(network.testValues(inputValues(INPUT_A_NAME, 1, INPUT_B_NAME, 0)).get(OUTPUT_XOR_NAME));
+    final Map<String, Double> inputValuesC = inputValues(INPUT_A_NAME, 1, INPUT_B_NAME, 0);
+    final Double outputXORforC = network.testValues(inputValuesC).get(OUTPUT_XOR_NAME);
+    final double uc101 = Math.round(outputXORforC);
     Assert.assertThat(uc101, is(1d));
 
-    final double uc110 = Math.round(network.testValues(inputValues(INPUT_A_NAME, 1, INPUT_B_NAME, 1)).get(OUTPUT_XOR_NAME));
+    final Map<String, Double> inputValuesD = inputValues(INPUT_A_NAME, 1, INPUT_B_NAME, 1);
+    final Double outputXORforD = network.testValues(inputValuesD).get(OUTPUT_XOR_NAME);
+    final double uc110 = Math.round(outputXORforD);
     Assert.assertThat(uc110, is(0d));
   }
 

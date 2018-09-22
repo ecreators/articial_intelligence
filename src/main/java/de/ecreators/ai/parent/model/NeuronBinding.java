@@ -57,7 +57,6 @@ public class NeuronBinding {
   // endregion
 
   public double calculateErrorSignal() {
-    // TODO unsure only error signal or multiplied with something other
     return this.outputNeuron.getErrorSignal() * this.weight;
   }
 
