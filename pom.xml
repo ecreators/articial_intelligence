@@ -22,7 +22,6 @@
         </plugins>
     </build>
     <modules>
-        <module>example</module>
     </modules>
     <dependencies>
         <dependency>
