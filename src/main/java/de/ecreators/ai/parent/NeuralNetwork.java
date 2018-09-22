@@ -77,7 +77,13 @@ public class NeuralNetwork {
   }
 
   private void notifyTotalErrorUpdated(final double totalError, final boolean solved) {
-    this.totalErrorListeners.forEach(handler -> handler.onTotalErrorUpdated(totalError, solved));
+    this.totalErrorListeners.forEach(handler -> {
+      final boolean cancel = handler.onTotalErrorUpdated(totalError, solved);
+      if(cancel) {
+        this.memory.getNetworkMetaData().setSolvation(NetworkMetaData.ESolvation.UNSOLVED);
+        this.memory.getNetworkMetaData().setSolvedNetwork(true);
+      }
+    });
   }
 
   public double trainGeneration(final NetworkTraining training, final double eta) {
@@ -102,7 +108,11 @@ public class NeuralNetwork {
     final double totalError = outputLayer.getTotalError();
     NetworkMetaData.ESolvation solved = NetworkMetaData.ESolvation.UNSOLVED;
     if(totalError <= training.getAcceptedTotalErrorThreshold()) {
-      solved = NetworkMetaData.ESolvation.SOLVED_BY_TOTAL_ERROR;
+      if(this.memory.getNetworkMetaData().getGeneration() <= 1) {
+        solved = NetworkMetaData.ESolvation.UNSOLVED;
+      }else {
+        solved = NetworkMetaData.ESolvation.SOLVED_BY_TOTAL_ERROR;
+      }
     }
 
     if (!solved.isSolvedState() && testUseCases(training)) {
@@ -169,6 +179,7 @@ public class NeuralNetwork {
 
   public void loadMemory(final NetworkMemory memory) {
     this.memory = memory;
+
     final List<NeuralLayer> layers = this.layers;
     for (int layerIndex = 0; layerIndex < layers.size(); layerIndex++) {
       final NeuralLayer layer = layers.get(layerIndex);

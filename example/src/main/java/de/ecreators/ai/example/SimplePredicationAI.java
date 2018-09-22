@@ -10,6 +10,7 @@ import de.ecreators.ai.parent.config.LayerConfig;
 import de.ecreators.ai.parent.config.NetworkConfig;
 import de.ecreators.ai.parent.config.NetworkMemory;
 import de.ecreators.ai.parent.strategy.INeuronActivationFunction;
+import de.ecreators.ai.parent.training.ITotalErrorEventHandler;
 import de.ecreators.ai.parent.training.NetworkTraining;
 
 /**
@@ -57,6 +58,10 @@ public class SimplePredicationAI {
     return hiddens;
   }
 
+  public void setTrainingListener(final ITotalErrorEventHandler handler) {
+    this.neuralNetwork.registerTotalErrorListenerHandler(handler);
+  }
+
   public static class InputArgs {
 
     private final List<String> names;
@@ -67,6 +72,10 @@ public class SimplePredicationAI {
 
     public List<String> getNames() {
       return new ArrayList<>(new HashSet<>(this.names));
+    }
+
+    public void addName(final String name) {
+      this.names.add(name);
     }
   }
 
@@ -94,7 +103,11 @@ public class SimplePredicationAI {
     }
 
     public List<String> getNames() {
-      return this.names;
+      return new ArrayList<>(new HashSet<>(this.names));
+    }
+
+    public void addName(final String name) {
+      this.names.add(name);
     }
   }
 }

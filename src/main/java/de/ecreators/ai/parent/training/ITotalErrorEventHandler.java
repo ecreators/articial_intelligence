@@ -5,5 +5,5 @@ package de.ecreators.ai.parent.training;
  */
 public interface ITotalErrorEventHandler {
 
-  void onTotalErrorUpdated(double totalError, boolean solved);
+  boolean onTotalErrorUpdated(double totalError, boolean solved);
 }

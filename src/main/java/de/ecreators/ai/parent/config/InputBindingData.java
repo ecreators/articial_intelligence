@@ -8,6 +8,9 @@ public class InputBindingData {
   private double weight;
   private double weightDelta;
 
+  public InputBindingData() {
+  }
+
   public double getWeight() {
     return this.weight;
   }

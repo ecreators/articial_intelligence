@@ -3,17 +3,17 @@ package de.ecreators.ai.parent.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author bjoern frohberg
  */
 public class NetworkMemory {
 
-  private final NetworkMetaData        networkMetaData;
-  private final List<List<NeuronData>> neuronData;
+  private final NetworkMetaData        networkMetaData = new NetworkMetaData();
+  private final List<List<NeuronData>> neuronData      = new ArrayList<>();
 
   public NetworkMemory() {
-    this.networkMetaData = new NetworkMetaData();
-    this.neuronData = new ArrayList<>();
   }
 
   public void incrementGeneration(final NetworkMetaData.ESolvation solvedNetwork) {
@@ -28,8 +28,9 @@ public class NetworkMemory {
     return this.neuronData;
   }
 
+  @JsonIgnore
   public boolean isSolvedNetwork() {
-    return this.networkMetaData.isSolvedNetwork();
+    return this.networkMetaData.getSolvedNetwork();
   }
 
   public void forget() {
@@ -37,7 +38,8 @@ public class NetworkMemory {
     this.networkMetaData.clear();
   }
 
+  @JsonIgnore
   public boolean isUnsaved() {
-    return this.neuronData.isEmpty() && !this.networkMetaData.isSolvedNetwork();
+    return this.neuronData.isEmpty() && !this.networkMetaData.getSolvedNetwork();
   }
 }

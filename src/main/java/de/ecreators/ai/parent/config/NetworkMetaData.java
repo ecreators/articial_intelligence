@@ -40,7 +40,7 @@ public class NetworkMetaData {
     setSolvation(solvedNetwork);
   }
 
-  public boolean isSolvedNetwork() {
+  public boolean getSolvedNetwork() {
     return this.solvedNetwork;
   }
 

@@ -95,10 +95,11 @@ public class NeuralNetworkTest {
     Assert.assertThat(uc110, is(0d));
   }
 
-  private static void printToLog(final NeuralNetwork network, final double totalError) {
+  private static boolean printToLog(final NeuralNetwork network, final double totalError) {
     final double digitRounding = Math.pow(10, 8);
     final double err = Math.round(totalError * digitRounding) / digitRounding;
     final long generation = network.getOrCreateUpdatedMemory().getNetworkMetaData().getGeneration();
     System.out.println(MessageFormat.format("Total Error: {0} ( generation = {1} )", err, generation));
+    return false;
   }
 }
