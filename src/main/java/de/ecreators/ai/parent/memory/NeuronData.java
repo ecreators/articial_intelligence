@@ -1,4 +1,4 @@
-package de.ecreators.ai.parent.config;
+package de.ecreators.ai.parent.memory;
 
 import java.util.ArrayList;
 import java.util.List;

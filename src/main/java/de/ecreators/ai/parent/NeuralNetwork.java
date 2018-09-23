@@ -6,8 +6,8 @@ import com.sun.istack.internal.NotNull;
 
 import de.ecreators.ai.parent.config.LayerConfig;
 import de.ecreators.ai.parent.config.NetworkConfig;
-import de.ecreators.ai.parent.config.NetworkMemory;
-import de.ecreators.ai.parent.config.NetworkMetaData;
+import de.ecreators.ai.parent.memory.NetworkMemory;
+import de.ecreators.ai.parent.memory.NetworkMetaData;
 import de.ecreators.ai.parent.model.NeuralLayer;
 import de.ecreators.ai.parent.training.ITotalErrorEventHandler;
 import de.ecreators.ai.parent.training.NetworkTraining;

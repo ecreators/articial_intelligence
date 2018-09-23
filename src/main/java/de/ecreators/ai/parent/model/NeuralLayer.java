@@ -7,8 +7,8 @@ import javax.management.AttributeNotFoundException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import de.ecreators.ai.parent.config.LayerConfig;
-import de.ecreators.ai.parent.config.NetworkMemory;
-import de.ecreators.ai.parent.config.NeuronData;
+import de.ecreators.ai.parent.memory.NetworkMemory;
+import de.ecreators.ai.parent.memory.NeuronData;
 
 /**
  * @author bjoern frohberg

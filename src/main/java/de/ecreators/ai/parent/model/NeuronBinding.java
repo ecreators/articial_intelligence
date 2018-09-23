@@ -1,6 +1,6 @@
 package de.ecreators.ai.parent.model;
 
-import de.ecreators.ai.parent.config.InputBindingData;
+import de.ecreators.ai.parent.memory.InputBindingData;
 
 /**
  * @author bjoern frohberg

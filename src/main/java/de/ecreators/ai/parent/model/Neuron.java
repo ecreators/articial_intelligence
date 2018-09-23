@@ -3,9 +3,9 @@ package de.ecreators.ai.parent.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ecreators.ai.parent.config.InputBindingData;
 import de.ecreators.ai.parent.config.LayerConfig;
-import de.ecreators.ai.parent.config.NeuronData;
+import de.ecreators.ai.parent.memory.InputBindingData;
+import de.ecreators.ai.parent.memory.NeuronData;
 import de.ecreators.ai.parent.strategy.INeuronActivationFunction;
 
 /**
