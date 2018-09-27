@@ -26,7 +26,7 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
-.idea/**/workspace.xml
+#.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
@@ -40,6 +40,8 @@ local.properties
 .idea/**/dbnavigator.xml
 .idea/**/gradle.xml
 .idea/**/libraries
+.idea/**/misc.xml
+.idea/eclipseCodeFormatter.xml
 cmake-build-*/
 .idea/**/mongoSettings.xml
 *.iws
@@ -53,3 +55,5 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 .idea/httpRequests
+ai-v-1.0.zip
+src/main/resources/

@@ -99,7 +99,7 @@ public class NeuralNetwork {
       }
 
       final List<NeuralLayer> layers = this.layers;
-      for (int layerIndex = layers.size() - 1; layerIndex >= 0; layerIndex--) {
+      for (int layerIndex = layers.size() - 1; layerIndex > 0; layerIndex--) {
         final NeuralLayer layer = layers.get(layerIndex);
         layer.applyDeltas();
       }

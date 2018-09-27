@@ -13,7 +13,6 @@ public class NeuronBinding {
   private double       weightDelta;
 
   public NeuronBinding(final Neuron inputNeuron, final Neuron outputNeuron) {
-
     this.inputNeuron = inputNeuron;
     this.outputNeuron = outputNeuron;
   }
@@ -38,9 +37,16 @@ public class NeuronBinding {
   public void updateWeightDeltaByEta(final double eta) {
     final double momentum = 0.9;
     final double actualInputValue = this.inputNeuron.getValue();
-    final double errorSignal = this.outputNeuron.getErrorSignal();
-    final double actualOutputValue = this.outputNeuron.getValue();
-    this.weightDelta = eta * errorSignal * actualInputValue * actualOutputValue + momentum * this.weightDelta;
+
+    // error = (t - y) x der(y) | sum(out.outNeuron.err * out.weight) * der(y)
+    final double errorSignal = this.getOutErrorSignal();
+
+    // a) w.delta = eta x error x in
+    // b) w.delta = eta x error x in + w.delta * momentum
+
+    // final double actualOutputValue = this.outputNeuron.getValue();
+    // weightDelta *= actualOutputValue <- to the following formula, but not required
+    this.weightDelta = eta * errorSignal * actualInputValue + momentum * this.weightDelta;
   }
   // endregion
 
@@ -56,8 +62,8 @@ public class NeuronBinding {
   }
   // endregion
 
-  public double calculateErrorSignal() {
-    return this.outputNeuron.getErrorSignal() * this.weight;
+  public double getOutErrorSignal() {
+    return this.outputNeuron.getErrorSignal();
   }
 
   public void applyDelta() {

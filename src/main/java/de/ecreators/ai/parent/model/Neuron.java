@@ -31,7 +31,7 @@ public class Neuron {
   }
 
   public void learnHiddenNeuron(final double eta) {
-    final double sum = this.outputBindings.stream().mapToDouble(b -> b.calculateErrorSignal()).sum();
+    final double sum = this.outputBindings.stream().mapToDouble(b -> b.getOutErrorSignal() * b.getWeight()).sum();
     this.errorSignal = sum * derivate(this.value);
     learn(eta);
   }
