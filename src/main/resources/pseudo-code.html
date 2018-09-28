@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workflow Training</title>
+</head>
+<body>
+<div class="tutorial">
+    <details>
+        <summary>run training:</summary>
+        <div>
+            <p class="comment">
+                <b>comment</b>:<br/>
+                <b>activate</b> used here SIGMOID<br/>
+                SIGMOID = 1 / ( 1 + Math.exp( -value ) )<br/>
+                <br/>
+                <b>derivative</b> of SIGMOID is<br/>
+                DERIVATIVE = value * ( 1 - value )<br/>
+                <br/>
+                <b>eta</b> means a value for learning between 0 and 1 (exclusive 0 and 1!)
+            </p>
+            <p>
+                if solved then <span class="exit">exit</span>
+            </p>
+
+            <div class="loop">
+                <p>do</p>
+                <div class="loop-content">
+                    <details>
+                        <summary>run train generation:</summary>
+                        <div>
+                            <div class="loop">
+                                <p>for each use case in training</p>
+                                <div class="loop-content">
+                                    <details>
+                                        <summary>test values from use case:</summary>
+                                        <div>
+                                            <details>
+                                                <summary>set input values:</summary>
+                                                <div>
+                                                    <div class="loop">
+                                                        <p>for each neuron in input-layer</p>
+                                                        <div class="loop-content">
+                                                            <p>set named-neuron.output-value = named-input-value</p>
+                                                        </div>
+                                                        <p>next for</p>
+                                                    </div>
+                                                </div>
+                                            </details>
+
+                                            <details>
+                                                <summary>propagate feed forward:</summary>
+                                                <div>
+                                                    <div class="loop">
+                                                        <p>for each layer forward not input layer</p>
+                                                        <div class="loop-content">
+                                                            <div class="loop">
+                                                                <p>for each neuron forward</p>
+                                                                <div class="loop-content">
+                                                                    <details>
+                                                                        <summary>update output-value:</summary>
+                                                                        <div>
+                                                                            <p>set sum = 0</p>
+                                                                            <div class="loop">
+                                                                                <p>for each input-binding</p>
+                                                                                <div class="loop-content">
+                                                                                    <p>sum = sum + input-binding.inNeuron.output-value *
+                                                                                        input-binding.weight</p>
+                                                                                </div>
+                                                                                <p>next for</p>
+                                                                            </div>
+                                                                            <p>output-value = activate(sum + bias)</p>
+                                                                        </div>
+                                                                    </details>
+                                                                </div>
+                                                                <p>next for</p>
+                                                            </div>
+                                                        </div>
+                                                        <p>next for</p>
+                                                    </div>
+                                                </div>
+                                            </details>
+
+                                            <details>
+                                                <summary>train output layer with eta and expected named outputs:</summary>
+                                                <div>
+                                                    <div class="loop">
+                                                        <p>for each neuron</p>
+                                                        <div class="loop-content">
+                                                            <p>set neuron.error-signal = (expected - neuron.output-value)</p>
+                                                            <details>
+                                                                <summary>learn with eta:</summary>
+                                                                <div>
+                                                                    <p>set neuron.momentum = 0.5</p>
+                                                                    <p>set neuron.bias-delta = neuron.error-signal * eta * + momentum *
+                                                                        neuron.bias-delta</p>
+
+                                                                    <div class="loop">
+                                                                        <p>for each input-binding</p>
+                                                                        <div class="loop-content">
+                                                                            <details>
+                                                                                <summary>update input-binding.weight-delta:</summary>
+                                                                                <div>
+                                                                                    <p>set binding.momentum = 0.9</p>
+                                                                                    <p>set binding.weight-delta = eta * neuron.error-signal
+                                                                                        * inNeuron.value
+                                                                                        +
+                                                                                        binding.momentum * binding.weight-delta</p>
+                                                                                </div>
+                                                                            </details>
+                                                                        </div>
+                                                                        <p>next for</p>
+                                                                    </div>
+                                                                </div>
+                                                            </details>
+                                                        </div>
+                                                        <p>next for</p>
+                                                    </div>
+                                                </div>
+                                            </details>
+
+                                            <details>
+                                                <summary>train each hidden layer backward with eta, start with last:</summary>
+                                                <div>
+                                                    <div class="loop">
+                                                        <p>for each neuron</p>
+                                                        <div class="loop-content">
+                                                            <p>set error = 0</p>
+                                                            <div class="loop">
+                                                                <p>for each output-binding</p>
+                                                                <div class="loop-content">
+                                                                    <p>error = error + output-binding.outNeuron.error-signal *
+                                                                        output-binding.weight</p>
+                                                                </div>
+                                                                <p>next for</p>
+                                                            </div>
+                                                            <p>set neuron.error-signal = error * derivative(neuron.output-value)</p>
+
+                                                            <details>
+                                                                <summary>learn with eta:</summary>
+                                                                <div>
+                                                                    (see above)
+                                                                </div>
+                                                            </details>
+                                                        </div>
+                                                        <p>next for</p>
+                                                    </div>
+                                                </div>
+                                            </details>
+
+                                            <details>
+                                                <summary>apply delta each layer except input-layer:</summary>
+                                                <div>
+                                                    <div class="loop">
+                                                        <p>for each reversed not input layer</p>
+                                                        <div class="loop-content">
+                                                            <div class="loop">
+                                                                <p>for each neuron</p>
+                                                                <div class="loop-content">
+                                                                    <p>neuron.bias = neuron.bias + neuron.bias-delta</p>
+                                                                    <div class="loop">
+                                                                        <p>for each input-binding</p>
+                                                                        <div class="loop-content">
+                                                                            <p>binding.weight = binding.weight +
+                                                                                binding.weight-delta</p>
+                                                                        </div>
+                                                                        <p>next for</p>
+                                                                    </div>
+                                                                </div>
+                                                                <p>next for</p>
+                                                            </div>
+                                                        </div>
+                                                        <p>next for</p>
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    </details>
+                                </div>
+                                <p>next for</p></div>
+                            <p>generation = generation + 1</p>
+                            <p style="color:green">// (regard output-value floating point rounding)</p>
+                            <p>solved = not first generation AND test all use cases are valid</p>
+                        </div>
+                    </details>
+                </div>
+                <p>while not solved</p>
+            </div>
+            <p class="exit">exit</p>
+        </div>
+    </details>
+</div>
+</body>
+<style type="text/css">
+
+    p, details {
+        margin: 15px 0 0;
+    }
+
+    div {
+        border-radius: 5px;
+        margin-left: 2ch;
+        margin-right: 2ch;
+        box-shadow: none;
+        padding-left: 5px;
+        font-family: "Courier New", monospace;
+        font-size: 14pt;
+    }
+
+    .loop {
+        border-left: blue dashed thin;
+        background-color: rgba(21, 186, 144, 0.1);
+        color: blue;
+        font-style: normal;
+        font-weight: bold;
+        box-shadow: 5px 10px rgba(0, 0, 0, 0.16);
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .loop:hover {
+        background-color: rgba(0, 81, 186, 0.3);
+    }
+
+    .loop > .loop-content {
+        border-left: none;
+        color: black;
+        font-style: normal;
+        font-weight: normal;
+        border-color: rgba(0, 81, 186, 0.1);
+        box-shadow: none;
+    }
+
+    .round > details {
+        margin-top: 5px;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 2px;
+        color: black;
+    }
+
+    summary {
+        font-weight: bold;
+        font-style: italic;
+        font-family: Arial, sans-serif;
+        font-size: 12pt;
+        color: black;
+    }
+
+    summary:hover {
+        background: rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+    }
+
+    .comment {
+        background-color: rgba(0, 186, 97, 0.2);
+        font-style: normal;
+    }
+
+    .exit {
+        color: red;
+    }
+</style>
+</html>

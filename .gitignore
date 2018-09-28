@@ -56,4 +56,5 @@ crashlytics-build.properties
 fabric.properties
 .idea/httpRequests
 ai-v-1.0.zip
-src/main/resources/
+.idea/markdown-navigator/
+.idea/workspace.xml
