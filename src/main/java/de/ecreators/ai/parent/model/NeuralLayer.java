@@ -35,7 +35,7 @@ public class NeuralLayer {
   }
 
   public void trainOutputLayer(final double eta, final Map<String, Double> expectedValues) {
-    this.neurons.forEach((k, v) -> v.learnOutputNeuron(eta, expectedValues.get(k)));
+    this.neurons.forEach((neuronName, neuron) -> neuron.learnOutputNeuron(eta, expectedValues.get(neuronName)));
   }
 
   public void trainHiddenLayer(final double eta) {

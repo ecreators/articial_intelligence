@@ -63,17 +63,22 @@ public class NeuralNetwork {
   }
 
   public void runTrainingSession(final NetworkTraining training, final boolean roundedOutputs) {
-    if (this.memory.isSolvedNetwork()) {
-      return;
+    System.out.println("Start Training");
+    try {
+      if (this.memory.isSolvedNetwork()) {
+        return;
+      }
+      final double eta = training.getEtaLearningGradient();
+      do {
+        final double totalError = trainGeneration(training, eta);
+        final boolean solvedNetwork = this.memory.isSolvedNetwork();
+        notifyTotalErrorUpdated(totalError, solvedNetwork);
+      }
+      while (!this.memory.isSolvedNetwork());
     }
-
-    final double eta = training.getEtaLearningGradient();
-    do {
-      final double totalError = trainGeneration(training, eta);
-      final boolean solvedNetwork = this.memory.isSolvedNetwork();
-      notifyTotalErrorUpdated(totalError, solvedNetwork);
+    finally {
+      System.out.println("End Training");
     }
-    while (!this.memory.isSolvedNetwork());
   }
 
   private void notifyTotalErrorUpdated(final double totalError, final boolean solved) {
@@ -93,7 +98,10 @@ public class NeuralNetwork {
 
       outputLayer.trainOutputLayer(eta, useCase.getExpectedOutputValues());
 
-      for (int layerIndex = this.layers.size() - 2; layerIndex >= 1; layerIndex--) {
+      final int firstHiddenLayerIndex = 1;
+      final int lastHiddenLayerIndex = this.layers.size() - 2;
+
+      for (int layerIndex = lastHiddenLayerIndex; layerIndex >= firstHiddenLayerIndex; layerIndex--) {
         final NeuralLayer hiddenLayer = this.layers.get(layerIndex);
         hiddenLayer.trainHiddenLayer(eta);
       }
@@ -159,15 +167,24 @@ public class NeuralNetwork {
   }
 
   public Map<String, Double> testValues(final Map<String, Double> inputValues) {
-    getInputLayer().setValues(inputValues);
+
+    NeuralLayer outputLayer = null;
 
     final List<NeuralLayer> layers = this.layers;
-    for (int layerIndex = 1; layerIndex < layers.size(); layerIndex++) {
+    for (int layerIndex = 0; layerIndex < layers.size(); layerIndex++) {
       final NeuralLayer layer = layers.get(layerIndex);
-      layer.feedForward();
-    }
+      if (layerIndex == 0) {
+        layer.setValues(inputValues);
+      }
+      else {
+        layer.feedForward();
+      }
 
-    return getOutputLayer().getValues();
+      if (layerIndex == layers.size() - 1) {
+        outputLayer = layer;
+      }
+    }
+    return outputLayer.getValues();
   }
 
   private NeuralLayer getInputLayer() {
@@ -291,5 +308,9 @@ public class NeuralNetwork {
 
   public double getInputValue(final String propertyName) {
     return getInputLayer().getValues().get(propertyName);
+  }
+
+  public NetworkConfig getConfig() {
+    return this.config;
   }
 }

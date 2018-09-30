@@ -38,10 +38,20 @@ public class Neuron {
 
   private void learn(final double eta) {
     final double momentum = 0.5;
-    this.biasDelta = this.errorSignal * eta + momentum * this.biasDelta;
-    for (final NeuronBinding inputBinding : this.inputBindings) {
-      inputBinding.updateWeightDeltaByEta(eta);
-    }
+
+    this.biasDelta = this.errorSignal * eta
+                     + momentum * this.biasDelta;
+
+    this.inputBindings.forEach(inputBinding -> {
+      final double momentumWeightDelta = 0.9;
+      final double errorSignal = inputBinding.getOutErrorSignal();
+      final double oldWeightDelta = inputBinding.getWeightDelta();
+
+      final double weightDelta = eta * errorSignal * inputBinding.getInputValue()
+                                 + momentumWeightDelta * oldWeightDelta;
+
+      inputBinding.setWeightDelta(weightDelta);
+    });
   }
 
   public void applyDeltas() {
@@ -52,7 +62,7 @@ public class Neuron {
   public void updateValue() {
     double sum = 0.0;
     for (final NeuronBinding binding : this.inputBindings) {
-      sum += binding.calculateNetInput();
+      sum += binding.getWeight() * binding.getInputValue();
     }
     this.value = this.activator.activate(sum + this.bias);
   }
